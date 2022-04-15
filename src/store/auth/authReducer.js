@@ -1,25 +1,28 @@
-let user, authToken, isAuth;
+import { createAuthObj } from '../../app/helpers';
 
+let user, authToken, isAuth;
+const localAuth = JSON.parse(localStorage.getItem('auth'));
 try {
-  user = JSON.parse(localStorage.getItem('auth')).user;
-  authToken = JSON.parse(localStorage.getItem('auth')).authToken;
-  isAuth = JSON.parse(localStorage.getItem('auth')).isAuth;
+  user = localAuth.user;
+  authToken = localAuth.authToken;
+  isAuth = localAuth.isAuth;
 } catch {
   user = null;
   authToken = null;
 }
 
-user = user ?? {
-  nickname: '',
-  avatarPath: '',
-  role: '',
-};
+user = user
+  ? createAuthObj(localAuth).user
+  : {
+      nickname: '',
+      avatarUrl: '',
+      role: '',
+    };
 
 authToken = authToken ?? {
   token: null,
-  abilities: '',
+  abilities: [],
 };
-
 
 const initialState = {
   auth: {
@@ -28,8 +31,6 @@ const initialState = {
     isAuth,
   },
 };
-
-
 
 function reducer(state = initialState, action) {
   switch (action.type) {

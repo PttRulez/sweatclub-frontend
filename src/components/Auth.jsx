@@ -1,6 +1,6 @@
 import { useSelector } from 'react-redux';
 import { useLocation, Outlet, Navigate } from 'react-router-dom';
-import Navbar from './Navbar';
+import MainLayout from '../layouts/MainLayout';
 
 const Auth = ({ allowedAbilities }) => {
   const auth = useSelector((state) => state.auth);
@@ -10,10 +10,9 @@ const Auth = ({ allowedAbilities }) => {
   return auth.authToken?.abilities?.find((ability) =>
     allowedAbilities?.includes(ability)
   ) ? (
-    <>
-      <Navbar />
+    <MainLayout>
       <Outlet />
-    </>
+    </MainLayout>
   ) : auth.isAuth ? (
     <Navigate to='/unauthorized' state={{ from: location }} replace />
   ) : (

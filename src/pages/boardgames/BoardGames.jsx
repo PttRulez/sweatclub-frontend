@@ -1,31 +1,48 @@
 import { useEffect, useState } from 'react';
 import api from '../../api/api';
-import { NavLink } from 'react-router-dom';
-import Boardgame from './Boardgame';
+import BoardgameItem from './partials/BoardgameItem';
 import AddButton from '../../components/UI/AddButton';
+import { useSelector } from 'react-redux';
+import MyModal from '../../components/UI/Modal/MyModal';
+import BoardGameForm from './BoardgameForm';
 
 const BoardGames = () => {
   const [boardgames, setBoardgames] = useState([]);
+  const [createVisible, setCreateVisible] = useState(false);
+  
+  const user = useSelector((state) => state.auth.user);
 
-  function fetchGames() {
+  function fetchBoardGames() {
     api
       .get('/boardgames')
       .then((response) => {
-        setBoardgames(response.data);
+        setBoardgames(response.data.data);
       })
       .catch((err) => console.log(err));
   }
 
   useEffect(() => {
-    fetchGames();
+    fetchBoardGames();
   }, []);
+
+  function afterBoardGameCreate() {
+    setCreateVisible(false);
+    fetchBoardGames();
+  }
 
   return (
     <>
-      <AddButton to='/add-boardgame'>+</AddButton>
+      {user.isAdmin && (
+        <>
+          <AddButton onClick={() => setCreateVisible(true)}>+</AddButton>
+          <MyModal visible={createVisible} setVisible={setCreateVisible}>
+            <BoardGameForm afterSubmit={afterBoardGameCreate} edit={false} />
+          </MyModal>
+        </>
+      )}
       <section className='flex flex-wrap'>
         {boardgames.map((boardgame) => (
-          <Boardgame boardgame={boardgame} key={boardgame.id}></Boardgame>
+          <BoardgameItem boardgame={boardgame} key={boardgame.name} />
         ))}
       </section>
     </>

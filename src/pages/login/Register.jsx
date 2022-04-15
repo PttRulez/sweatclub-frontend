@@ -35,7 +35,7 @@ const Register = () => {
     .then((res) => {
       if (res.data.status === 200) {
         const authObj = {
-          authToken: res.data.auth_token,
+          authToken: res.data.authToken,
           isAuth: true,
           user: res.data.user
         }
@@ -91,7 +91,6 @@ const Register = () => {
             className='bg-gray-50 border w-full border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500  p-2.5 '
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            required
           />
           <p className='text-red-600'>{errorList.password}</p>
         </div>

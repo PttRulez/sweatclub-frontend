@@ -1,40 +1,59 @@
 import { useEffect, useState } from 'react';
-import Game from './Game';
+import GameItem from './partials/GameItem';
 import api from '../../api/api';
-import { NavLink } from 'react-router-dom';
+import AddButton from '../../components/UI/AddButton';
 import { useSelector } from 'react-redux';
+import MyModal from '../../components/UI/Modal/MyModal';
+import GameForm from './GameForm';
 
 const GamesList = () => {
+  const user = useSelector((state) => state.auth.user);
   const [games, setGames] = useState([]);
-  const authToken = useSelector((state) => state.authToken.token);
+  const [createVisible, setCreateVisible] = useState(false);
+  const [img, setImg] = useState(false);
 
   function fetchGames() {
     api
       .get('/games')
       .then((response) => {
-        setGames(response.data);
+        setGames(response.data.data);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => {
+        console.log('ERROR', err);
+      });
   }
 
   useEffect(() => {
-    console.log(authToken);
     fetchGames();
   }, []);
 
+  function afterGameCreate() {
+    setCreateVisible(false);
+    fetchGames();
+  }
+ 
   return (
-    <div className='mt-10 text-center'>
-      <NavLink
-        to='/addgame'
-        className='inline-block text-white font-bold bg-blue-500 rounded-full absolute right-20 text-center p-4'
-      >
-        +
-      </NavLink>
+    <>
+      {user.isAdmin && (
+        <>
+          <AddButton onClick={() => setCreateVisible(true)}>+</AddButton>
+          <MyModal visible={createVisible} setVisible={setCreateVisible}>
+            <GameForm afterSubmit={afterGameCreate} edit={false}/>
+          </MyModal>
+        </>
+      )}
+
       <br />
-      {games.map((game) => (
-        <Game game={game} key={game.id}></Game>
-      ))}
-    </div>
+      <div className='flex justify-center flex-wrap'>
+        {games.map((game) => (
+          <GameItem game={game} key={game.id} showGamePhoto={setImg} />
+        ))}
+      </div>
+
+      <MyModal visible={img} setVisible={setImg} className='w-2/3'>
+        <img src={img} alt='' />
+      </MyModal>
+    </>
   );
 };
 

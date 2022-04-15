@@ -2,10 +2,12 @@ import { useRef, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-
+import styles from './login.module.css';
 import api from '../../api/api';
+import { setAuth } from '../../app/helpers';
 
 const Login = () => {
+  // console.log('STYLES', styles.formsection)
   const nicknameRef = useRef();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -31,19 +33,12 @@ const Login = () => {
 
   function login(e) {
     e.preventDefault();
-    console.log(formData);
+    
     api
       .post('login', formData)
       .then((res) => {
         if (res.data.status === 200) {
-          const authObj = {
-            authToken: res.data.auth_token,
-            isAuth: true,
-            user: res.data.user,
-          };
-
-          dispatch({ type: 'SET_AUTH', payload: authObj });
-          localStorage.setItem('auth', JSON.stringify(authObj));
+          setAuth(res.data);
         }
         return res;
       })
@@ -58,14 +53,14 @@ const Login = () => {
         } else {
           setFormData({
             ...formData,
-            error_list: { message: 'Самсинг вронг' },
+            error_list: { message: err.response.data.message },
           });
         }
       });
   }
 
   return (
-    <section className='flex justify-center items-center content-center h-screen'>
+    <section className={styles.formsection} > 
       <form
         className='flex h-min w-min p-5 flex-col text-center bg-gray-300 border-gray-300 border-solid border-2 rounded-3xl pt-5 pb-10'
         onSubmit={login}

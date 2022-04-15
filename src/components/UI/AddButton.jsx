@@ -1,15 +1,15 @@
-import React from 'react'
+import React from 'react';
 import { Link } from 'react-router-dom';
 
-const AddButton = ({to, children}) => {
+const AddButton = ({ onClick, children }) => {
   return (
-    <Link
-        to={to}
-        className='inline-block text-white font-bold bg-blue-500 rounded-full absolute right-20 text-center p-4'
-      >
-        { children }
-      </Link>
-  )
-}
+    <button
+      className='inline-block text-white font-bold bg-blue-500 rounded-full fixed right-5 bottom-20 text-center py-4 px-6'
+      onClick={onClick}
+    >
+      {children}
+    </button>
+  );
+};
 
-export default AddButton
+export default AddButton;
