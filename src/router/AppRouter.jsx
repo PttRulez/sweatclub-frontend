@@ -1,8 +1,7 @@
 import { Route, Routes } from 'react-router-dom';
 import BoardGames from '../pages/boardgames/BoardGames';
-import CreateBoardGame from '../pages/boardgames/CreateBoardgame';
 import MainPage from '../pages/MainPage';
-import Auth from './Auth';
+import Auth from '../components/Auth';
 import Login from '../pages/login/Login';
 import Register from '../pages/login/Register';
 import Unauthorized from '../pages/Unauthorized';
@@ -14,6 +13,8 @@ import EditGame from '../pages/games/EditGame';
 import RatingsTable from '../pages/RatingsTable';
 import { ABILITIES } from '../utils/constants';
 import BoardGameForm from '../pages/boardgames/BoardgameForm';
+import CandyCrush from '../pages/js-games/candy-crush/CandyCrush';
+import CandyCrushRatings from '../pages/js-games/candy-crush/CandyCrushRatings';
 
 const AppRouter = () => {
   return (
@@ -27,6 +28,9 @@ const AppRouter = () => {
 
         <Route path='/profile/:id' element={<Profile />} />
         <Route path='/profile/edit' element={<EditUser />} />
+
+        <Route path='/candy-crush' element={<CandyCrush />} />
+        <Route path='/candy-crush-ratings' element={<CandyCrushRatings />} />
       </Route>
 
       <Route element={<Auth allowedAbilities={[ABILITIES.Admin]} />}>

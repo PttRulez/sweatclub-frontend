@@ -34,7 +34,6 @@ const EditUser = () => {
           isAuth: true,
           user: res.data.data
         }
-        console.log('res.data', res.data)
         dispatch({ type: 'SET_AUTH', payload: authObj })
         localStorage.setItem('auth', JSON.stringify(authObj));
 

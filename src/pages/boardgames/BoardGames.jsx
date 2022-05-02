@@ -18,10 +18,11 @@ const BoardGames = () => {
       .then((response) => {
         setBoardgames(response.data.data);
       })
-      .catch((err) => console.log(err));
+      .catch((err) => console.log('ERROR FETCHING GAMES IN Boardgame component', err));
   }
 
   useEffect(() => {
+    document.title = 'Коллекция настолок';
     fetchBoardGames();
   }, []);
 

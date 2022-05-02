@@ -1,8 +1,8 @@
 import StatsTableRow from "./StatsTableRow";
 
-const UsersStatsTable = ({ users, ...props }) => {
+const UsersStatsTable = ({ usersStats, ...props }) => {
   const className = props.className ?? '';
-
+  
   return (
     <table className={`table-fixed text-center ${className}`}>
       <thead className='bg-slate-300 rounded-2xl'>
@@ -14,7 +14,7 @@ const UsersStatsTable = ({ users, ...props }) => {
         </tr>
       </thead>
       <tbody>
-        {users.map((user) => <StatsTableRow stats={user} key={user.nickname} />)}
+        {usersStats.map((stats, index) => <StatsTableRow stats={stats} key={stats.user.nickname} place={index+1}/>)}
       </tbody>
     </table>
   );

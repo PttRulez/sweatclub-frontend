@@ -4,15 +4,14 @@ import api from '../../api/api';
 import { useNavigate, useParams } from 'react-router-dom';
 import { generateAvatar } from '../../app/helpers';
 import DatePicker from 'react-datepicker';
-import cl from './games.module.css';
+import cl from './css/games.module.css';
 
-const CreateGame = ({ edit, afterSubmit }) => {
+const GameForm = ({ edit, afterSubmit }) => {
   const { id: gameId } = useParams();
 
   const navigate = useNavigate();
 
   const noGame = { id: 0, name: 'Игра не выбрана', image_path: '' };
-  const [userListOpen, setUserListOpen] = useState(false);
   const [players, setPlayers] = useState([]);
   const [users, setUsers] = useState([]);
   const [datePlayed, setDatePlayed] = useState(new Date());
@@ -20,14 +19,13 @@ const CreateGame = ({ edit, afterSubmit }) => {
   const [boardGames, setBoardGames] = useState([noGame]);
   const [photo, setPhoto] = useState(null);
 
-  
-
   useEffect(() => {
     if (edit) {
       api.get(`/games/${gameId}`).then((res) => {
         setPlayers(res.data.game.players);
         setBoardGame(res.data.game.boardgame);
         setUsers(res.data.users);
+        setDatePlayed(new Date(res.data.game.date_played.split('-').reverse().join('-')) );
       });
     } else {
       api.get('/users').then((res) => {
@@ -44,6 +42,7 @@ const CreateGame = ({ edit, afterSubmit }) => {
     api
       .get('/boardgames')
       .then((res) => setBoardGames([noGame, ...res.data.data]));
+
   }, []);
 
   const sortedUsers = useMemo(() => {
@@ -53,7 +52,6 @@ const CreateGame = ({ edit, afterSubmit }) => {
       if(a.nickname < b.nickname) return -1;
       return 0
     });
-    console.log('SORTED', sorted)
     return sorted;
   }, [users]);
 
@@ -64,7 +62,6 @@ const CreateGame = ({ edit, afterSubmit }) => {
   function chooseUser(user) {
     setPlayers([...players, user]);
     setUsers(users.filter((u) => u.id !== user.id));
-    setUserListOpen(false);
   }
 
   function unChoosePlayer(player) {
@@ -108,17 +105,19 @@ const CreateGame = ({ edit, afterSubmit }) => {
         .then(() => {
           navigate('/');
         })
-        .catch((err) => alert(err));
+        .catch((err) => {
+          alert('Error after game edit', err)
+          console.log('Error after game edit', err)
+        });
     } else {
       api
         .post('games', formData)
         .then(() => {
           navigate('/');
+          afterSubmit();
         })
-        .catch((err) => alert(err));
-    }
-
-    afterSubmit();
+        .catch((err) => alert('Error after game Create', err));
+    }    
   }
 
   return (
@@ -128,6 +127,7 @@ const CreateGame = ({ edit, afterSubmit }) => {
     >
       {/* ------------------CHOOSE GAME---------------------------- */}
       <div className='flex mb-2'>
+
         <select
           name='game'
           value={boardgame.id}
@@ -141,7 +141,7 @@ const CreateGame = ({ edit, afterSubmit }) => {
           ))}
         </select>
         <div className='w-20 ml-5'>
-          <img src={boardgame.image_url} alt='' />
+          <img src={boardgame.imageUrl} alt='' />
         </div>
       </div>
 
@@ -155,7 +155,7 @@ const CreateGame = ({ edit, afterSubmit }) => {
       <div className='flex justify-between items-start'>
         {/* ------------------USER LIST---------------------------- */}
         <div className='w-2/5'>
-          <ul className='w-full inline-block p-3 h-32 overflow-auto'>
+          <ul className='w-full inline-block p-3 h-52 overflow-auto'>
             {sortedUsers.map((user) => (
               <li
                 onClick={() => chooseUser(user)}
@@ -165,7 +165,7 @@ const CreateGame = ({ edit, afterSubmit }) => {
                 <img
                   src={user.avatarUrl || generateAvatar(user.nickname)}
                   alt=''
-                  className='w-10 h-10 rounded-full'
+                  className='w-8 h-8 rounded-full'
                 />
                 <p className='text-center w-3/4 pl-2'>{user.nickname}</p>
               </li>
@@ -244,16 +244,15 @@ const CreateGame = ({ edit, afterSubmit }) => {
       </div>
 
       <BlueButton
-        text='Отправить'
         disabled={
           boardgame.id === 0 ||
           players.length === 0 ||
           !players.find((p) => p.winner)
         }
-      />
+      >Отправить</BlueButton>
     </form>
     // </section>
   );
 };
 
-export default CreateGame;
+export default GameForm;

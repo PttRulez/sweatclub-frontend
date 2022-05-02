@@ -25,11 +25,9 @@ authToken = authToken ?? {
 };
 
 const initialState = {
-  auth: {
     user,
     authToken,
     isAuth,
-  },
 };
 
 function reducer(state = initialState, action) {
@@ -37,7 +35,7 @@ function reducer(state = initialState, action) {
     case 'SET_AUTH':
       return {
         ...state,
-        auth: action.payload,
+        ...action.payload,
       };
     default:
       return state;

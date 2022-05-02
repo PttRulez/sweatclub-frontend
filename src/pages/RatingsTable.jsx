@@ -3,17 +3,18 @@ import api from '../api/api';
 import UsersStatsTable from '../components/stats/UsersStatsTable';
 
 const RatingsTable = () => {
-  const [users, setUsers] = useState([]);
+  const [usersStats, setUsersStats] = useState([]);
 
   useEffect(() => {
+    document.title = 'Таблица чемпионов';
     api.get('users-stats').then(res => {
-      setUsers(res.data);
+      setUsersStats(res.data);
     })
   }, [])
 
   return (
     <section className='pl-52 pt-10 pb-1'>
-      <UsersStatsTable users={users} className='w-full' />
+      <UsersStatsTable usersStats={usersStats} className='w-full' />
     </section>
   );
 };

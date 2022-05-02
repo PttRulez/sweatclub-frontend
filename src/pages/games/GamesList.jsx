@@ -5,13 +5,14 @@ import AddButton from '../../components/UI/AddButton';
 import { useSelector } from 'react-redux';
 import MyModal from '../../components/UI/Modal/MyModal';
 import GameForm from './GameForm';
+import cl from './css/games.module.css';
 
 const GamesList = () => {
   const user = useSelector((state) => state.auth.user);
   const [games, setGames] = useState([]);
   const [createVisible, setCreateVisible] = useState(false);
   const [img, setImg] = useState(false);
-
+  const [gameFormKey, setGameFormKey] = useState(1)
   function fetchGames() {
     api
       .get('/games')
@@ -19,11 +20,12 @@ const GamesList = () => {
         setGames(response.data.data);
       })
       .catch((err) => {
-        console.log('ERROR', err);
+        console.log('ERROR FETCHING GAMES IN GAME LIST', err);
       });
   }
 
   useEffect(() => {
+    document.title = 'Потный клуб';
     fetchGames();
   }, []);
 
@@ -31,14 +33,19 @@ const GamesList = () => {
     setCreateVisible(false);
     fetchGames();
   }
+
+  function openCreateGameModal(){
+    setCreateVisible(true);
+    setGameFormKey(gameFormKey  +1);
+  }
  
   return (
     <>
       {user.isAdmin && (
         <>
-          <AddButton onClick={() => setCreateVisible(true)}>+</AddButton>
+          <AddButton onClick={openCreateGameModal}>+</AddButton>
           <MyModal visible={createVisible} setVisible={setCreateVisible}>
-            <GameForm afterSubmit={afterGameCreate} edit={false}/>
+            <GameForm afterSubmit={afterGameCreate} edit={false} key={gameFormKey}/>
           </MyModal>
         </>
       )}
@@ -50,8 +57,8 @@ const GamesList = () => {
         ))}
       </div>
 
-      <MyModal visible={img} setVisible={setImg} className='w-2/3'>
-        <img src={img} alt='' />
+      <MyModal visible={img} setVisible={setImg}>
+        <img src={String(img)} alt='' className={cl.photo}/>
       </MyModal>
     </>
   );

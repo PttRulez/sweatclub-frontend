@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, NavLink, useNavigate } from 'react-router-dom';
 import api from '../api/api';
 import { useDispatch, useSelector } from 'react-redux';
+import { generateAvatar } from '../app/helpers';
 
 const Navbar = () => {
   const [showProfileMenu, setShowProfileMenu] = useState(false);
@@ -14,7 +15,7 @@ const Navbar = () => {
       .post('logout')
       .then(
         (res) => console.log('Has been logouted'),
-        (err) => console.log('>>ERR>>', err)
+        (err) => console.log('>>ERR after click logout>>', err)
       )
       .finally(() => {
         dispatch({
@@ -65,13 +66,21 @@ const Navbar = () => {
           >
             Настолки клуба
           </NavLink>
+          <NavLink
+            to='/candy-crush'
+            className={({ isActive }) =>
+              isActive ? 'text-blue-500 font-bold mr-10' : 'mr-10'
+            }
+          >
+            Candy Crush
+          </NavLink>
         </li>
       </ul>
       <div className='flex items-center relative' >
         <Link to={`/profile/${user.id}`} className='flex items-center' onMouseEnter={() => setShowProfileMenu(true)} onMouseLeave={() => setShowProfileMenu(false)}>
           <img
             className='w-10 h-10 rounded-full mr-2'
-            src={user.avatarUrl}
+            src={user.avatarUrl || generateAvatar(user.nickname)}
             alt='User Avatar'
           />
           <p className='text-gray-900 leading-none mr-2'>{user.nickname}</p>

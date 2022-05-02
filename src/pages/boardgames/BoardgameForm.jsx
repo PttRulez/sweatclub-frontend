@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import swal from 'sweetalert';
 import { useNavigate, useParams } from 'react-router-dom';
 import api from '../../api/api';
+import BlueButton from '../../components/UI/BlueButton';
 
 const BoardGameForm = ({ edit, afterSubmit }) => {
   const navigate = useNavigate();
@@ -16,7 +17,6 @@ const BoardGameForm = ({ edit, afterSubmit }) => {
     if (edit) {
       
       api.get(`/boardgames/${boardgameId}`).then((res) => {
-        console.log('EDIT BORDGAME', res.data.boardgame)
         setName(res.data.boardgame.name);
         setImageUrl(res.data.boardgame.imageUrl);
         setHasPoints(res.data.boardgame.has_points);
@@ -36,7 +36,7 @@ const BoardGameForm = ({ edit, afterSubmit }) => {
     api.post(url, formData).then(
       (res) => {
         if (edit) {
-          navigate(url);
+          navigate('/boardgames');
         } else {
           swal('Игра успешно добавлена', res.data.name, 'success');
           afterSubmit()
@@ -115,12 +115,12 @@ const BoardGameForm = ({ edit, afterSubmit }) => {
 
       <p className='text-red-600'>{validationErrors.image}</p>
 
-      <button
+      <BlueButton
         type='submit'
         className='mt-2 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center'
       >
         {edit ? 'Сохранить' : 'Создать игру'}
-      </button>
+      </BlueButton>
     </form>
   );
 };

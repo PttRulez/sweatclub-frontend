@@ -50,7 +50,7 @@ const Boardgame = () => {
       </div>
 
       <MyModal visible={img} setVisible={setImg} className='w-2/3'>
-        <img src={img} alt='' />
+        <img src={String(img)} alt='' />
       </MyModal>
     </>
   );

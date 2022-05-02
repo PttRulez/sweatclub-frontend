@@ -10,11 +10,12 @@ const Profile = () => {
   const [data, setData] = useState({ user: {}, byBoardGames: {}, overall: {} });
 
   useEffect(() => {
+    document.title = 'Профиль';
     api.get(`users/${userId}`).then((res) => {
-      console.log('AS', res.data);
       setData(res.data);
+      
     });
-  }, []);
+  }, [userId]);
 
   return (
     <>
@@ -28,7 +29,7 @@ const Profile = () => {
         </div>
       </section>
       <section>
-        <UsersStatsTable users={[data]} className='w-full' />
+        <UsersStatsTable usersStats={[data]} className='w-full' />
       </section>
     </>
   );

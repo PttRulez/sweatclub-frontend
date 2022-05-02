@@ -1,16 +1,13 @@
 import { useRef, useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import styles from './login.module.css';
-import api from '../../api/api';
-import { setAuth } from '../../app/helpers';
+import {login} from './../../store/auth/actions';
+
 
 const Login = () => {
-  // console.log('STYLES', styles.formsection)
   const nicknameRef = useRef();
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     nickname: '',
@@ -31,46 +28,27 @@ const Login = () => {
     });
   }
 
-  function login(e) {
+  function onSubmit(e) {
     e.preventDefault();
-    
-    api
-      .post('login', formData)
-      .then((res) => {
-        if (res.data.status === 200) {
-          setAuth(res.data);
-        }
-        return res;
-      })
-      .then((res) => {
-        if (res.data.status === 200) {
-          navigate('/');
-        }
-      })
-      .catch((err) => {
-        if (err?.response?.status === 422) {
-          setFormData({ ...formData, error_list: err.response.data.errors });
-        } else {
-          setFormData({
-            ...formData,
-            error_list: { message: err.response.data.message },
-          });
-        }
-      });
+
+    dispatch(login(formData)).catch(err => {
+      if (err?.response?.status === 422) {
+        setFormData({ ...formData, error_list: err.response.data.errors });
+      } else {
+        setFormData({
+          ...formData,
+          error_list: { message: err.response.data.message },
+        });
+      }
+    });
   }
 
   return (
-    <section className={styles.formsection} > 
-      <form
-        className='flex h-min w-min p-5 flex-col text-center bg-gray-300 border-gray-300 border-solid border-2 rounded-3xl pt-5 pb-10'
-        onSubmit={login}
-      >
+    <section className={styles.formsection}>
+      <form className='flex h-min w-min p-5 flex-col text-center bg-gray-300 border-gray-300 border-solid border-2 rounded-3xl pt-5 pb-10' onSubmit={onSubmit}>
         <h1 className='mb-2 font-bold text-xl'>Логин</h1>
         <div>
-          <label
-            htmlFor='nickname'
-            className='block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300'
-          >
+          <label htmlFor='nickname' className='block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300'>
             Никнейм
           </label>
           <input
@@ -88,10 +66,7 @@ const Login = () => {
           <p className='text-red-600'>{formData.error_list.nickname}</p>
         </div>
         <div className='mt-2'>
-          <label
-            htmlFor='password'
-            className='block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300'
-          >
+          <label htmlFor='password' className='block mb-2 text-sm font-medium text-gray-900 dark:text-gray-300'>
             Пароль
           </label>
           <input
@@ -114,10 +89,7 @@ const Login = () => {
             Войти
           </button>
 
-          <Link
-            to='/register'
-            className=' text-blue-500 font-bold ml-5 text-sm'
-          >
+          <Link to='/register' className=' text-blue-500 font-bold ml-5 text-sm'>
             Регистрация
           </Link>
         </div>

@@ -23,19 +23,22 @@ const GameItem = ({ game, showGamePhoto, ...props }) => {
           <p className='text-moyTsvet font-bold text-xl mb-2'>
             {game.boardgame.name}
           </p>
-          <img src={game.boardgame.imageUrl} alt='' className='w-32' />
+          <Link
+            to={`/boardgames/${game.boardgame.id}`}
+          >
+            <img src={game.boardgame.imageUrl} alt='' className='w-32' />
+          </Link>
         </div>
       </div>
 
       {/* ----------------------------------------------- PHOTO and PLAYERS ------------------------------------------------------------- */}
       <div className='flex justify-between'>
-
         {/* ----------------------- PLAYERS ----------------------------- */}
-        <div className='flex flex-col justify-evenly px-5'>
+        <div className='flex flex-col px-5'>
           {game.players.map((player) => (
             <Link
               to={`/profile/${player.id}`}
-              className='flex items-center px-2'
+              className='flex items-center px-2 mb-1'
               key={player.nickname}
             >
               <img
@@ -43,19 +46,20 @@ const GameItem = ({ game, showGamePhoto, ...props }) => {
                 src={player.avatarUrl || generateAvatar(player.nickname)}
                 alt='Avatar of Writer'
               />
-              <div className='text-sm'>
+              <div className='text-sm flex flex-col items-start'>
                 <p className='text-gray-900 leading-none'>{player.nickname}</p>
-                <div className='text-sm flex justify-evenly items-center'>
+                <div className='text-sm '>
+                  
+                  {player.points ? (
+                    <span className='text-gray-600 mr-2'>{player.points}</span>
+                  ) : (
+                    ''
+                  )}
                   {Boolean(player.winner) && (
                     <FontAwesomeIcon
                       icon={faCrown}
                       className='text-yellow-700'
                     />
-                  )}
-                  {player.points ? (
-                    <span className='text-gray-600 '>{player.points}</span>
-                  ) : (
-                    ''
                   )}
                 </div>
               </div>
@@ -67,11 +71,15 @@ const GameItem = ({ game, showGamePhoto, ...props }) => {
         {game.photoUrl && (
           <div>
             <div className='flex justify-center'>
-              <img src={game.photoUrl} alt='' className='max-h-32 cursor-pointer' onClick={ () => showGamePhoto(game.photoUrl) }/>
+              <img
+                src={game.photoUrl ?? ''}
+                alt=''
+                className='max-h-32 cursor-pointer'
+                onClick={() => showGamePhoto(game.photoUrl)}
+              />
             </div>
           </div>
         )}
-
       </div>
     </div>
   );
