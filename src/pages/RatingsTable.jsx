@@ -1,16 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import api from '../api/api';
 import UsersStatsTable from '../components/stats/UsersStatsTable';
+import { useSelector } from 'react-redux';
 
 const RatingsTable = () => {
   const [usersStats, setUsersStats] = useState([]);
+  const club = useSelector(state => state.general.club)
 
   useEffect(() => {
     document.title = 'Таблица чемпионов';
-    api.get('users-stats').then(res => {
+
+    const params = club !== null ? { club_id : club.id } : {}
+
+    api.get('users-stats', { params  }).then(res => {
       setUsersStats(res.data);
     })
-  }, [])
+  }, [club])
 
   return (
     <section className='pl-52 pt-10 pb-1'>

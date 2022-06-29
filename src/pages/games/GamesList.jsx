@@ -8,18 +8,24 @@ import GameForm from './GameForm';
 import cl from './css/games.module.css';
 
 const GamesList = () => {
-  const user = useSelector((state) => state.auth.user);
+  const user = useSelector(state => state.auth.user);
   const [games, setGames] = useState([]);
   const [createVisible, setCreateVisible] = useState(false);
   const [img, setImg] = useState(false);
-  const [gameFormKey, setGameFormKey] = useState(1)
+  const [gameFormKey, setGameFormKey] = useState(1);
+  const club = useSelector(state => state.general.club);
+
   function fetchGames() {
     api
-      .get('/games')
-      .then((response) => {
+      .get('/games', {
+        params: {
+          club_id: club?.id,
+        },
+      })
+      .then(response => {
         setGames(response.data.data);
       })
-      .catch((err) => {
+      .catch(err => {
         console.log('ERROR FETCHING GAMES IN GAME LIST', err);
       });
   }
@@ -27,38 +33,38 @@ const GamesList = () => {
   useEffect(() => {
     document.title = 'Потный клуб';
     fetchGames();
-  }, []);
+  }, [club]);
 
   function afterGameCreate() {
     setCreateVisible(false);
     fetchGames();
   }
 
-  function openCreateGameModal(){
+  function openCreateGameModal() {
     setCreateVisible(true);
-    setGameFormKey(gameFormKey  +1);
+    setGameFormKey(gameFormKey + 1);
   }
- 
+
   return (
     <>
       {user.isAdmin && (
         <>
           <AddButton onClick={openCreateGameModal}>+</AddButton>
           <MyModal visible={createVisible} setVisible={setCreateVisible}>
-            <GameForm afterSubmit={afterGameCreate} edit={false} key={gameFormKey}/>
+            <GameForm afterSubmit={afterGameCreate} edit={false} key={gameFormKey} />
           </MyModal>
         </>
       )}
 
       <br />
-      <div className='flex justify-center flex-wrap'>
-        {games.map((game) => (
+      <div className='flex flex-col items-end lg:flex-row lg:justify-center lg:flex-wrap'>
+        {games.map(game => (
           <GameItem game={game} key={game.id} showGamePhoto={setImg} />
         ))}
       </div>
 
       <MyModal visible={img} setVisible={setImg}>
-        <img src={String(img)} alt='' className={cl.photo}/>
+        <img src={String(img)} alt='' className={cl.photo} />
       </MyModal>
     </>
   );

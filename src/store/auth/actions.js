@@ -8,7 +8,7 @@ export const authAction = (authObj) => {
 }
 
 export const login = (formData, setFormData) => { 
-  fetch("${")
+  // fetch("${")
   return function (dispatch) {
     return api
       .post('login', formData)
@@ -20,7 +20,6 @@ export const login = (formData, setFormData) => {
       })
       .then((res) => {
         if (res.data.status === 200) {
-          console.log('history')
           history.push('/ratings-table');
         }
       })   

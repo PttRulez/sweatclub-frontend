@@ -9,11 +9,11 @@ import { Link } from 'react-router-dom';
 
 const GameItem = ({ game, showGamePhoto, ...props }) => {
   return (
-    <div className='w-fit h-1/3 flex items-center border-2 mb-2 p-3 border-gray-400 mr-2'>
+    <div className='w-full lg:w-fit h-1/3 flex items-center justify-center border-2 mb-2 p-3 border-gray-400 mr-2'>
       {/* ----------------------------------------------- INFO ------------------------------------------------------------- */}
       <div className='mb-8 flex flex-col'>
-        <div className='flex flex-col items-center'>
-          <p className='text-sm text-blue-400  flex justify-center items-center'>
+        <div className='flex flex-col w-32 text-center'>
+          <p className='text-sm text-blue-400  flex justify-center items-center '>
             <FontAwesomeIcon icon={faCalendarDays} className='mr-2' />
             {game.date_played}
             <Link to={`/games/${game.id}/edit`}>
@@ -26,7 +26,7 @@ const GameItem = ({ game, showGamePhoto, ...props }) => {
           <Link
             to={`/boardgames/${game.boardgame.id}`}
           >
-            <img src={game.boardgame.imageUrl} alt='' className='w-32' />
+            <img src={game.boardgame.imageUrl} alt='' className='h-32 w-32 object-contain' />
           </Link>
         </div>
       </div>

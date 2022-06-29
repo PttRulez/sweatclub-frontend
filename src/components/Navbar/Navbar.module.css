@@ -1,0 +1,73 @@
+/*                  MENU LIST                */
+.menu {
+  @apply text-base fixed left-0 w-full h-full bg-sky-300 top-[-100%]
+  sm:w-1/2 sm:static sm:text-sm sm:px-5 sm:bg-transparent sm:h-full
+  md:text-base
+}
+
+.menu-list {
+  @apply flex flex-col items-center justify-start pt-10 gap-y-10 h-full
+    sm:flex sm:flex-row sm:gap-x-2 sm:pt-0 sm:gap-y-0
+    md:justify-between md:gap-x-7;
+}
+
+.menu-list > a {
+  @apply h-fit;
+}
+
+.menu.active {
+  @apply top-14;
+}
+
+/*                   BURGER               */
+.header__burger {
+  display: block;
+  position: relative;
+  width: 30px;
+  height: 20px;
+  z-index: 3;
+  @apply block sm:hidden;
+}
+
+.header__burger span {
+  position: absolute;
+  background-color: #000075;
+  width: 100%;
+  height: 2px;
+  left: 0;
+  top: 9px;
+  transition: all 0.3s ease 0s;
+}
+
+.header__burger:before,
+.header__burger:after {
+  content: '';
+  background-color: #000075;
+  position: absolute;
+  width: 100%;
+  height: 2px;
+  left: 0;
+  transition: all 0.3s ease 0s;
+}
+
+.header__burger:before {
+  top: 0;
+}
+
+.header__burger:after {
+  bottom: 0;
+}
+
+.header__burger.active:before {
+  transform: rotate(45deg);
+  top: 9px;
+}
+
+.header__burger.active:after {
+  transform: rotate(-45deg);
+  bottom: 9px;
+}
+
+.header__burger.active span {
+  transform: scale(0);
+}
