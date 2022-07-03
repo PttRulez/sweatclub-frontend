@@ -24,7 +24,7 @@ const Boardgame = () => {
   return (
     <>
       <div className='mt-10'>
-        <div className='text-center inline-block pr-10 pb-10 float-left'>
+        <div className='text-center block md:inline-block pr-10 pb-10 md:float-left'>
           <img
             src={boardgame.imageUrl}
             alt={`${boardgame.name} avatar`}

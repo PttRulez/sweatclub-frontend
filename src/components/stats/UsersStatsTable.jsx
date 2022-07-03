@@ -2,15 +2,19 @@ import StatsTableRow from "./StatsTableRow";
 
 const UsersStatsTable = ({ usersStats, ...props }) => {
   const className = props.className ?? '';
-  
+
+  const tableHeaders = ['Сыграно', 'Победы', 'Винрейт' ]
   return (
     <table className={`table-fixed text-center ${className}`}>
       <thead className='bg-slate-300 rounded-2xl'>
+      
         <tr>
-          <th>Игра</th>
-          <th>Сыграно</th>
-          <th>Победы</th>
-          <th>Винрейт</th>
+          <th className='text-sm font-normal'></th>
+          {tableHeaders.map((name) => (
+            <th className='text-sm font-normal'>{name}</th>
+          ))
+
+          }
         </tr>
       </thead>
       <tbody>

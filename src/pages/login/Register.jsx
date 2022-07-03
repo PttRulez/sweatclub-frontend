@@ -125,7 +125,6 @@ const Register = () => {
             className='bg-gray-50 border w-full text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500  p-2.5 '
             placeholder='img'
             onChange={(e) => setAvatar(e.target.files?.[0])}
-            required
           />
         </div>
         <p className='text-red-600'>{errorList.avatar}</p>

@@ -9,7 +9,7 @@ import { Link } from 'react-router-dom';
 
 const GameItem = ({ game, showGamePhoto, ...props }) => {
   return (
-    <div className='w-full lg:w-fit h-1/3 flex items-center justify-center border-2 mb-2 p-3 border-gray-400 mr-2'>
+    <div className='w-full lg:w-fit h-1/3 flex items-center justify-evenly md:justify-center border-2 mb-2 p-3 border-gray-400 mr-2'>
       {/* ----------------------------------------------- INFO ------------------------------------------------------------- */}
       <div className='mb-8 flex flex-col'>
         <div className='flex flex-col w-32 text-center'>
@@ -32,7 +32,7 @@ const GameItem = ({ game, showGamePhoto, ...props }) => {
       </div>
 
       {/* ----------------------------------------------- PHOTO and PLAYERS ------------------------------------------------------------- */}
-      <div className='flex justify-between'>
+      <div className='flex flex-col md:flex-row items-center justify-between'>
         {/* ----------------------- PLAYERS ----------------------------- */}
         <div className='flex flex-col px-5'>
           {game.players.map((player) => (

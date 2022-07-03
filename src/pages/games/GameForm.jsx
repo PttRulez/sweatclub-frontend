@@ -19,8 +19,9 @@ const GameForm = ({ edit, afterSubmit }) => {
   const [boardgame, setBoardGame] = useState(noGame);
   const [boardGames, setBoardGames] = useState([noGame]);
   const [photo, setPhoto] = useState(null);
-  const [clubId, setClubId] = useState(null);
+  const [clubId, setClubId] = useState('');
   const clubs = useSelector(state => state.general.clubs)
+  const [errors, setErrors] = useState([])
 
   useEffect(() => {
     if (edit) {
@@ -119,7 +120,11 @@ const GameForm = ({ edit, afterSubmit }) => {
           navigate('/');
           afterSubmit();
         })
-        .catch(err => alert('Error after game Create', err));
+        .catch((err) => {
+          if(err.response.status === 422) {
+            setErrors(Object.values(err.response.data.errors))
+          }
+        });
     }
   }
 
@@ -256,10 +261,13 @@ const GameForm = ({ edit, afterSubmit }) => {
       </div>
 
       <BlueButton
-        disabled={boardgame.id === 0 || players.length === 0 || !players.find(p => p.winner)}
+        disabled={boardgame.id === 0 || players.length === 0 || !players.find(p => p.winner) || clubId === ''}
       >
         Отправить
       </BlueButton>
+      {errors.length > 0 && (
+        errors.map((error) => <p className='text-red-500 text-center mt-2'>{error[0]}</p>)
+      )}
     </form>
     // </section>
   );

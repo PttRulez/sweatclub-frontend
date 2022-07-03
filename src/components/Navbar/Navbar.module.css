@@ -1,6 +1,6 @@
 /*                  MENU LIST                */
 .menu {
-  @apply text-base fixed left-0 w-full h-full bg-sky-300 top-[-100%]
+  @apply text-base fixed left-0 w-full h-full bg-sky-300 top-[-100%] z-10
   sm:w-1/2 sm:static sm:text-sm sm:px-5 sm:bg-transparent sm:h-full
   md:text-base
 }

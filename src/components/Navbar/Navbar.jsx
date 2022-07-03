@@ -11,7 +11,6 @@ import { faGlobe } from '@fortawesome/free-solid-svg-icons';
 import { useClickOutside } from '../../hooks/useClickOutside';
 
 const Navbar = () => {
-  const [showProfileMenu, setShowProfileMenu] = useState(false);
   const user = useSelector(state => state.auth.user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -72,6 +71,7 @@ const Navbar = () => {
         alt='Sweatclub logo'
         onClick={() => navigate('/')}
       />
+      {/* -------------------------------------- Menu ---------------------------------------- */}
       <nav className={css.menu} ref={navEl}>
         <ul className={css['menu-list']}>
           {menus.map(item => {
@@ -91,9 +91,26 @@ const Navbar = () => {
               </NavLink>
             );
           })}
+
+          {/* ---------------------------- Отображаем Аватарку и Ник если меньше 640 пикселей */}
+          <Link
+            to={`/profile/${user.id}`}
+            className='flex items-center gap-x-1 sm:hidden'
+            onClick={() => {
+              navEl.current.classList.toggle(css.active);
+            }}
+          >
+            <img
+              className='w-10 h-10 rounded-full'
+              src={user.avatarUrl || generateAvatar(user.nickname)}
+              alt='User Avatar'
+            />
+            <p className='text-gray-900 leading-none text-sm'>{user.nickname}</p>
+          </Link>
         </ul>
       </nav>
       <div className='flex items-center relative'>
+        {/* -------------------------------------------  Clubs ------------------------------------------------------------ */}
         <div className='relative mr-5' ref={ref}>
           {club ? (
             <img
@@ -111,6 +128,7 @@ const Navbar = () => {
           )}
           {isComponentVisible && (
             <div className='absolute mt-3 bg-zinc-300 p-2 rounded right-0'>
+              {/* Worldwide Icon */}
               <div
                 onClick={() => changeClub(null)}
                 className='flex items-center cursor-pointer hover:text-amber-600 ransition ease-in-out duration-300'
@@ -118,6 +136,8 @@ const Navbar = () => {
                 <FontAwesomeIcon icon={faGlobe} className='w-4 h-4' />
                 <p className='pl-2'>Worldwide</p>
               </div>
+
+              {/* Other Clubs */}
               {clubs.map(club => (
                 <div
                   onClick={() => changeClub(club)}
@@ -135,11 +155,9 @@ const Navbar = () => {
             </div>
           )}
         </div>
-        <div
-          className='w-content flex flex-col items-center'
-          onMouseEnter={() => setShowProfileMenu(true)}
-          onMouseLeave={() => setShowProfileMenu(false)}
-        >
+
+        {/* -------------------------------------------  Profile avatar ------------------------------------------------------------ */}
+        <div className='w-content hidden sm:flex flex-col items-center group'>
           <Link to={`/profile/${user.id}`} className='flex items-center gap-x-1'>
             <img
               className='w-10 h-10 rounded-full'
@@ -148,11 +166,10 @@ const Navbar = () => {
             />
             <p className='text-gray-900 leading-none text-sm'>{user.nickname}</p>
           </Link>
-          {showProfileMenu && (
-            <ul className='h-10 absolute -bottom-10 mt-3 text-sm text-blue-500 bg-zinc-300 opacity-80 p-2 rounded'>
-              <button onClick={logout}>logout</button>
-            </ul>
-          )}
+
+          <ul className='hidden absolute sm:group-hover:block  h-10 -bottom-10 mt-3 text-sm text-blue-500 bg-zinc-300 opacity-80 p-2 rounded'>
+            <button onClick={logout}>logout</button>
+          </ul>
         </div>
       </div>
       <div className={css.header__burger} onClick={clickBurger}>

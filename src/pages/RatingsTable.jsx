@@ -18,7 +18,7 @@ const RatingsTable = () => {
   }, [club])
 
   return (
-    <section className='pl-52 pt-10 pb-1'>
+    <section className='pt-10 pb-1'>
       <UsersStatsTable usersStats={usersStats} className='w-full' />
     </section>
   );
