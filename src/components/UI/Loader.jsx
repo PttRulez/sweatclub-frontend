@@ -4,7 +4,10 @@ import { faSpinner } from '@fortawesome/free-solid-svg-icons';
 const Loader = ({ addClasses }) => {
   return (
     <div className='text-center mt-12'>
-      <FontAwesomeIcon icon={faSpinner} className={addClasses + ' text-zinc-900 animate-spin'} />
+      <FontAwesomeIcon
+        icon={faSpinner}
+        className={addClasses + ' text-zinc-900 animate-spin'}
+      />
     </div>
   );
 };

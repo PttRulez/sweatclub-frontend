@@ -1,5 +1,5 @@
-import React, { useRef, useState, useEffect } from 'react';
-import { Link, NavLink, useNavigate } from 'react-router-dom';
+import React, { useRef, useEffect } from 'react';
+import { Link, NavLink } from 'react-router-dom';
 import api from '../../api/api';
 import { useDispatch, useSelector } from 'react-redux';
 import { generateAvatar } from '../../app/helpers';
@@ -15,7 +15,6 @@ const Navbar = () => {
   const user = useSelector(state => state.auth.user);
   const authToken = useSelector(state => state.auth.authToken);
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const navEl = useRef(null);
   const navbarEl = useRef(null);
   const clubs = useSelector(state => state.general.clubs);
@@ -26,7 +25,8 @@ const Navbar = () => {
     dispatch(logout());
   }
 
-  function clickBurger() {
+  function clickBurger(e) {
+    e.stopPropagation();
     navEl.current.classList.toggle(css.active);
   }
 
@@ -63,7 +63,7 @@ const Navbar = () => {
             return (
               <NavLink
                 onClick={() => {
-                  navEl.current.classList.toggle(css.active);
+                  navEl.current.classList.remove(css.active);
                 }}
                 key={item.text}
                 to={item.to}
@@ -180,28 +180,18 @@ const Navbar = () => {
               </Link>
 
               <div
-                className='hidden absolute sm:group-hover:block  h-10 -bottom-10 mt-3 text-sm text-blue-500 bg-zinc-300 opacity-80 p-2 rounded cursor-pointer'
+                className='gap-x-2 items-center sm:group-hover:flex hidden absolute h-10 -bottom-10 mt-3 text-sm text-blue-500 bg-zinc-300 opacity-80 p-2 rounded cursor-pointer'
                 onClick={handleLogout}
               >
-                <Link
-                  className='hidden sm:flex gap-x-2 items-center'
-                  to={'/login'}
-                  onClick={() => {
-                    navEl.current.classList.toggle(css.active);
-                  }}
-                >
-                  <FontAwesomeIcon icon={faRightToBracket} className='text-zinc-900' />
-                  <p>Войти</p>
-                </Link>
+                <FontAwesomeIcon icon={faRightFromBracket} className='text-zinc-900' />
+                <p>Выйти</p>
               </div>
             </div>
           ) : (
-            <div>
-              <FontAwesomeIcon icon={faRightFromBracket} className='text-zinc-900' />
-              <Link to={'/login'} className='hidden sm:inline'>
-                Войти
-              </Link>
-            </div>
+            <Link to={'/login'} className='hidden sm:flex gap-x-2 items-center'>
+              <FontAwesomeIcon icon={faRightToBracket} className='text-zinc-900' />
+              <p>Войти</p>
+            </Link>
           )}
         </div>
       </div>

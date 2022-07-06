@@ -11,7 +11,7 @@ const UsersStatsTable = ({ usersStats, ...props }) => {
         <tr>
           <th className='text-sm font-normal w-[40%]'></th>
           {tableHeaders.map((name) => (
-            <th className='text-sm font-normal'>{name}</th>
+            <th className='text-sm font-normal' key={name}>{name}</th>
           ))
 
           }

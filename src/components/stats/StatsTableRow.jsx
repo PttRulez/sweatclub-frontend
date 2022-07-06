@@ -1,7 +1,5 @@
 import {
-  faAngleUp,
-  faAngleDown,
-  faMedal,
+  faMedal
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useState } from 'react';
@@ -45,7 +43,7 @@ const StatsTableRow = ({ stats, place }) => {
         Object.entries(stats.byBoardGames).map(
           ([boardgameName, boardgameStats], index) => (
             <tr
-              key={boardgameName + stats.user.nickname}
+              key={boardgameName + stats.user.nickname + index}
               className={index % 2 === 0 ? 'bg-slate-200' : 'bg-amber-200'}
             >
               <td className='py-2'>{boardgameName}</td>

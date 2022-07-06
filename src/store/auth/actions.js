@@ -8,7 +8,6 @@ export const authAction = authObj => {
 };
 
 export const login = formData => {
-  // fetch("${")
   return function (dispatch) {
     return api
       .post('login', formData)
