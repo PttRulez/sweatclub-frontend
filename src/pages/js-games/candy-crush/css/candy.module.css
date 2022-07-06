@@ -1,12 +1,122 @@
-.game {
-  width: 560px;
-  height: 560px;
+.wrapper {
   display: flex;
-  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.main-grid {
+  display: grid;
+  grid-auto-flow: row;
+  margin-top: 10px;
+  row-gap: 20px;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+}
+
+.ratings {
+  grid-column-start: 1;
+  grid-column-end: 4;
+  text-align: center;
+  grid-column: 1 / 4;
+  order: 1;
+}
+
+.seconds {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  order: 2;
+}
+
+.game {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  grid-template-rows: repeat(8, 1fr);
+  justify-content: center;
+  justify-items: center;
+  align-items: center;
+  order: 3;
 }
 
 .game img {
   cursor: url(https://ssl.gstatic.com/ui/v1/icons/mail/images/2/openhand.cur), default !important;
-  width: 70px;
-  height: 70px;
+  width: 40px;
+  height: 40px;
+}
+
+.score {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  order: 4;
+}
+
+.restart {
+  text-align: center;
+  order: 5;
+  grid-column: 1 / 4;
+}
+
+@media (max-width: 1023px) and (min-height: 640px) {
+  .seconds {
+    order: 1;
+  }
+
+  .ratings {
+    order: 2;
+    grid-column: auto;
+  }
+
+  .score {
+    order: 3;
+  }
+
+  .game {
+    order: 4;
+    grid-column: 1/4;
+  }
+}
+
+@media (min-width: 390px) and (min-height: 600px) {
+  .game img {
+    width: 45px;
+    height: 45px;
+  }
+}
+
+@media (min-width: 540px) and (min-height: 720px) {
+  .game img {
+    width: 55px;
+    height: 55px;
+  }
+}
+
+@media (min-width: 640px) and (min-height: 768px) {
+  .game img {
+    width: 60px;
+    height: 60px;
+  }
+}
+
+@media (min-width: 768px) and (min-height: 800px) {
+  .game img {
+    width: 70px;
+    height: 70px;
+  }
+}
+
+@media (min-width: 768px) and (min-height: 920px) {
+  .game img {
+    width: 90px;
+    height: 90px;
+  }
+}
+
+@media (min-width: 912px) and (min-height: 1024px) {
+  .game img {
+    width: 100px;
+    height: 100px;
+  }
 }

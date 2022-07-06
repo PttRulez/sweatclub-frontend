@@ -19,7 +19,7 @@ import CandyCrushRatings from '../pages/js-games/candy-crush/CandyCrushRatings';
 const AppRouter = () => {
   return (
     <Routes>
-      <Route element={<Auth allowedAbilities={[ABILITIES.User]} />}>
+      <Route element={<Auth allowedAbilities={[ABILITIES.All]} />}>
         <Route path='/' element={<MainPage />} />
 
         <Route path='/boardgames' element={<BoardGames />} />
@@ -31,6 +31,12 @@ const AppRouter = () => {
 
         <Route path='/candy-crush' element={<CandyCrush />} />
         <Route path='/candy-crush-ratings' element={<CandyCrushRatings />} />
+
+        <Route path='/login' element={<Login />} />
+        <Route path='/register' element={<Register />} />
+
+        <Route path='/unauthorized' element={<Unauthorized />} />
+        <Route path='*' element={<DoesntExist />} />
       </Route>
 
       <Route element={<Auth allowedAbilities={[ABILITIES.Admin]} />}>
@@ -38,12 +44,6 @@ const AppRouter = () => {
 
         <Route path='/boardgames/:id/edit' element={<BoardGameForm edit={true} />} />
       </Route>
-
-      <Route path='/login' element={<Login />} />
-      <Route path='/register' element={<Register />} />
-
-      <Route path='/unauthorized' element={<Unauthorized />} />
-      <Route path='*' element={<DoesntExist />} />
     </Routes>
   );
 };

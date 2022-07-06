@@ -17,7 +17,7 @@ export const createAuthObj = (authData) => {
     user: {
       ...authData.user,
       avatarUrl: authData.user.avatarUrl?? generateAvatar(authData.user.nickname),
-      isAdmin: authData.authToken.abilities.map(a => a.toLowerCase()).includes('admin')
+      isAdmin: authData.authToken?.abilities.map(a => a.toLowerCase()).includes('admin')
     },
   };
 }

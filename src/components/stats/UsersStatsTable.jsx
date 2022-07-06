@@ -9,7 +9,7 @@ const UsersStatsTable = ({ usersStats, ...props }) => {
       <thead className='bg-slate-300 rounded-2xl'>
       
         <tr>
-          <th className='text-sm font-normal'></th>
+          <th className='text-sm font-normal w-[40%]'></th>
           {tableHeaders.map((name) => (
             <th className='text-sm font-normal'>{name}</th>
           ))

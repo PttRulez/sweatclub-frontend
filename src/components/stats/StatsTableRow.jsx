@@ -22,7 +22,7 @@ const StatsTableRow = ({ stats, place }) => {
   return (
     <>
       <tr className='leading-10 border-slate-400 border-b py-2 hover:bg-purple-200 transition-colors duration-200 delay-50 ease-in cursor-pointer' onClick={() => setOpened(!opened)}>
-        <td className='align-middle flex justify-start items-center text-sm last:py-2 pl-4 sm:pl-20 py-2'>
+        <td className='align-middle flex justify-start items-center text-sm last:py-2 pl-4 sm:pl-20 py-2 text-center'>
           <img
             className='w-6 h-6 sm:w-10 sm:h-10 rounded-full mr-2'
             src={stats.user.avatarUrl || generateAvatar(stats.user.nickname)}

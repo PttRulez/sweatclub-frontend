@@ -8,14 +8,14 @@ import GameItem from '../games/partials/GameItem';
 import MyModal from '../../components/UI/Modal/MyModal';
 
 const Boardgame = () => {
-  const user = useSelector((state) => state.auth.user);
+  const user = useSelector(state => state.auth.user);
   const { id: boardgameId } = useParams();
   const [boardgame, setBoardgame] = useState({});
   const [games, setGames] = useState([]);
   const [img, setImg] = useState(false);
 
   useEffect(() => {
-    api.get(`boardgames/${boardgameId}`).then((res) => {
+    api.get(`boardgames/${boardgameId}`).then(res => {
       setBoardgame(res.data.boardgame);
       setGames(res.data.games);
     });
@@ -24,27 +24,20 @@ const Boardgame = () => {
   return (
     <>
       <div className='mt-10'>
-        <div className='text-center block md:inline-block pr-10 pb-10 md:float-left'>
-          <img
-            src={boardgame.imageUrl}
-            alt={`${boardgame.name} avatar`}
-            className='max-w-sm '
-          />
-          <h1 className='inline'>{boardgame.name}</h1>
-          {user.isAdmin && (
-            <Link
-              to={`/boardgames/${boardgame.id}/edit`}
-              className='text-xs ml-5'
-            >
-              <FontAwesomeIcon icon={faPencil} />
-            </Link>
-          )}
+        <div className='text-center block md:inline-block md:float-left'>
+          <img src={boardgame.imageUrl} alt={`${boardgame.name} avatar`} />
+          <div className='flex items-center justify-center gap-x-2'>
+            <h1>{boardgame.name}</h1>
+            {user.isAdmin && (
+              <Link to={`/boardgames/${boardgame.id}/edit`} className='text-xs'>
+                <FontAwesomeIcon icon={faPencil} />
+              </Link>
+            )}
+          </div>
         </div>
-        <div className='flex flex-wrap justify-evenly'>
-          {games.map((game) => {
-            return (
-              <GameItem game={game} showGamePhoto={setImg} key={`game_${game.id}`} />
-            );
+        <div className='flex flex-wrap justify-evenly mt-10'>
+          {games.map(game => {
+            return <GameItem game={game} showGamePhoto={setImg} key={`game_${game.id}`} />;
           })}
         </div>
       </div>

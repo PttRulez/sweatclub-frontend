@@ -140,7 +140,9 @@ const CandyCrush = () => {
   };
 
   const dragDrop = async e => {
-    if(e.preventDefault) { e.preventDefault(); }
+    if (e.preventDefault) {
+      e.preventDefault();
+    }
     if (candyReplaced === null) {
       levelIntervalId = setInterval(() => {
         if (level > 1) {
@@ -161,7 +163,12 @@ const CandyCrush = () => {
     candies[candyReplacedId] = candyDragged.getAttribute('src');
     candies[candyDraggedId] = candyReplaced.getAttribute('src');
 
-    const validMoves = [candyDraggedId - 1, candyDraggedId - width, candyDraggedId + 1, candyDraggedId + width];
+    const validMoves = [
+      candyDraggedId - 1,
+      candyDraggedId - width,
+      candyDraggedId + 1,
+      candyDraggedId + width,
+    ];
     const validMove = validMoves.includes(candyReplacedId);
     const { toDestroy, _ } = checkAll();
 
@@ -235,19 +242,28 @@ const CandyCrush = () => {
   }, [candies]);
 
   return (
-    <>
-      <div className='my-2 text-center'>
-        <Link to='/candy-crush-ratings' className='inline-block font-bold hover:text-blue-400 outline-dashed p-3'>
-          ratings
-        </Link>
-      </div>
-      <div className='flex justify-center'>
-        <div className='flex flex-col justify-center items-center mr-36 w-32'>
-          <p className='text-red-600 font-bold text-9xl'>{timeToGo}</p>
-          <p className='text-blue-600 font-bold text-lg'>
+    <div className={cssClasses.wrapper}>
+      <div className={cssClasses['main-grid']}>
+
+        {/* --------------------RATINGS LINK ----------------------- */}
+        <div className={cssClasses['ratings']}>
+          <Link
+            to='/candy-crush-ratings'
+            className='inline-block font-bold hover:text-blue-400 outline-dashed p-3'
+          >
+            ratings
+          </Link>
+        </div>
+
+        {/* ----------------- SECONDS for MOVE ------------------------ */}
+        <div className={cssClasses.seconds}>
+          <p className='text-red-600 font-bold text-5xl lg:text-9xl'>{timeToGo}</p>
+          <p className='text-blue-600 font-bold text-base md:text-lg'>
             <span className='text-sm text-gray-500 font-normal'>на ход:</span> {level}
           </p>
         </div>
+
+        {/* ----------------- GAME-FIELD ------------------------ */}
         <div className={cssClasses.game}>
           {candies.map((candyColor, index) => (
             <img
@@ -262,20 +278,24 @@ const CandyCrush = () => {
               onDragLeave={e => e.preventDefault()}
               onDrop={dragDrop}
               onDragEnd={dragEnd}
-            
             />
           ))}
         </div>
-        <div className='flex flex-col justify-center items-start ml-36 w-32'>
-          <p className='text-purple-800 font-bold text-9xl'>{score}</p>
+
+        {/* ----------------- SCORE ------------------------ */}
+        <div className={cssClasses.score}>
+          <p className='text-purple-800 font-bold text-8xl lg:text-9xl'>{score}</p>
+        </div>
+        
+
+        {/* -----------------RESTART BUTTON ------------------------ */}
+        <div className={cssClasses.restart}>
+          <BlueButton className='mt-10' onClick={resetGame}>
+            restart
+          </BlueButton>
         </div>
       </div>
-      <div className='text-center'>
-        <BlueButton className='mt-10' onClick={resetGame}>
-          restart
-        </BlueButton>
-      </div>
-    </>
+    </div>
   );
 };
 

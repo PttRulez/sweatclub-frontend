@@ -6,16 +6,21 @@ import { useSelector } from 'react-redux';
 import MyModal from '../../components/UI/Modal/MyModal';
 import GameForm from './GameForm';
 import cl from './css/games.module.css';
+import Loader from '../../components/UI/Loader';
 
 const GamesList = () => {
   const user = useSelector(state => state.auth.user);
   const [games, setGames] = useState([]);
-  const [createVisible, setCreateVisible] = useState(false);
+  const [gameFormVisible, setGameFormVisible] = useState(false);
   const [img, setImg] = useState(false);
+  const [edit, setEdit] = useState(false);
+  const [gameIdToEdit, setGameIdToEdit] = useState(null);
+  const [loading, setLoading] = useState(false);
   const [gameFormKey, setGameFormKey] = useState(1);
   const club = useSelector(state => state.general.club);
 
   function fetchGames() {
+    setLoading(true);
     api
       .get('/games', {
         params: {
@@ -23,6 +28,7 @@ const GamesList = () => {
         },
       })
       .then(response => {
+        setLoading(false);
         setGames(response.data.data);
       })
       .catch(err => {
@@ -36,36 +42,61 @@ const GamesList = () => {
   }, [club]);
 
   function afterGameCreate() {
-    setCreateVisible(false);
+    setGameFormVisible(false);
     fetchGames();
   }
 
-  function openCreateGameModal() {
-    setCreateVisible(true);
+  function openGameModal(gameId = null) {
+    if (gameId) {
+      setEdit(true);
+      setGameIdToEdit(gameId);
+    } else {
+      setEdit(false);
+    }
+
+    setGameFormVisible(true);
     setGameFormKey(gameFormKey + 1);
   }
 
   return (
     <>
-      {user.isAdmin && (
+      {loading ? (
+        <Loader addClasses={'w-52 h-52'}/>
+      ) : (
         <>
-          <AddButton onClick={openCreateGameModal}>+</AddButton>
-          <MyModal visible={createVisible} setVisible={setCreateVisible}>
-            <GameForm afterSubmit={afterGameCreate} edit={false} key={gameFormKey} />
+          {user?.isAdmin && (
+            <>
+              <AddButton onClick={() => openGameModal(null)}>+</AddButton>
+              {gameFormVisible && (
+                <MyModal visible={gameFormVisible} setVisible={setGameFormVisible}>
+                  <GameForm
+                    afterSubmit={afterGameCreate}
+                    edit={edit}
+                    gameId={gameIdToEdit}
+                    key={gameFormKey}
+                  />
+                </MyModal>
+              )}
+            </>
+          )}
+
+          <br />
+          <div className='flex flex-col items-end md:flex-row md:justify-center md:flex-wrap'>
+            {games.map(game => (
+              <GameItem
+                game={game}
+                key={game.id}
+                showGamePhoto={setImg}
+                pencilClick={openGameModal}
+              />
+            ))}
+          </div>
+
+          <MyModal visible={img} setVisible={setImg}>
+            <img src={String(img)} alt='' className={cl.photo} />
           </MyModal>
         </>
       )}
-
-      <br />
-      <div className='flex flex-col items-end lg:flex-row lg:justify-center lg:flex-wrap'>
-        {games.map(game => (
-          <GameItem game={game} key={game.id} showGamePhoto={setImg} />
-        ))}
-      </div>
-
-      <MyModal visible={img} setVisible={setImg}>
-        <img src={String(img)} alt='' className={cl.photo} />
-      </MyModal>
     </>
   );
 };

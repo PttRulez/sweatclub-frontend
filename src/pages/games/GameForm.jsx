@@ -7,11 +7,8 @@ import DatePicker from 'react-datepicker';
 import cl from './css/games.module.css';
 import { useSelector } from 'react-redux';
 
-const GameForm = ({ edit, afterSubmit }) => {
-  const { id: gameId } = useParams();
-
+const GameForm = ({ edit, afterSubmit, gameId }) => {
   const navigate = useNavigate();
-
   const noGame = { id: 0, name: 'Игра не выбрана', image_path: '' };
   const [players, setPlayers] = useState([]);
   const [users, setUsers] = useState([]);
@@ -20,15 +17,27 @@ const GameForm = ({ edit, afterSubmit }) => {
   const [boardGames, setBoardGames] = useState([noGame]);
   const [photo, setPhoto] = useState(null);
   const [clubId, setClubId] = useState('');
-  const clubs = useSelector(state => state.general.clubs)
-  const [errors, setErrors] = useState([])
+  const clubs = useSelector(state => state.general.clubs);
+  const club = useSelector(state => state.general.club);
+  const [errors, setErrors] = useState([]);
+
+  useEffect(() => {
+    setClubId(club ? club.id : '');
+  }, [club]);
 
   useEffect(() => {
     if (edit) {
       api.get(`/games/${gameId}`).then(res => {
         setPlayers(res.data.game.players);
         setBoardGame(res.data.game.boardgame);
-        setUsers(res.data.users);
+        setClubId(res.data.game.club_id);
+        setUsers(
+          res.data.users.map(u => {
+            u.winner = false;
+            u.points = '';
+            return u;
+          })
+        );
         setDatePlayed(new Date(res.data.game.date_played.split('-').reverse().join('-')));
       });
     } else {
@@ -108,6 +117,7 @@ const GameForm = ({ edit, afterSubmit }) => {
         .post(`games/${gameId}?_method=PUT`, formData)
         .then(() => {
           navigate('/');
+          afterSubmit();
         })
         .catch(err => {
           alert('Error after game edit', err);
@@ -120,9 +130,9 @@ const GameForm = ({ edit, afterSubmit }) => {
           navigate('/');
           afterSubmit();
         })
-        .catch((err) => {
-          if(err.response.status === 422) {
-            setErrors(Object.values(err.response.data.errors))
+        .catch(err => {
+          if (err.response.status === 422) {
+            setErrors(Object.values(err.response.data.errors));
           }
         });
     }
@@ -130,19 +140,16 @@ const GameForm = ({ edit, afterSubmit }) => {
 
   return (
     <form
-      className={
-        cl.gameForm +
-        ' flex flex-col justify-evenly h-min w-content p-5  bg-gray-300 border-gray-300 border-solid border-2 rounded-3xl pt-5 pb-10'
-      }
+      className='flex flex-col justify-evenly items-center h-min max-w-max p-2 sm:p-5  bg-gray-300 border-gray-300 border-solid border-2 rounded-3xl'
       onSubmit={onSubmit}
     >
-      {/* ------------------CHOOSE GAME---------------------------- */}
-      <div className='flex mb-2'>
+      {/* ------------------club_id, game section---------------------------- */}
+      <section className='grid grid-rows sm:grid-cols-[2fr_2fr_1fr] gap-y-2 justify-items-center sm:gap-x-2 mb-2 w-full'>
         <select
           name='club_id'
           value={clubId}
           onChange={e => setClubId(e.target.value)}
-          className='mb-2 '
+          className='w-full rounded-lg border-none'
         >
           <option value=''>Клуб</option>
           {clubs.map(club => (
@@ -152,7 +159,13 @@ const GameForm = ({ edit, afterSubmit }) => {
           ))}
         </select>
 
-        <select name='game' value={boardgame.id} onChange={chooseBoardgame} className='mb-2 '>
+        <select
+          name='game'
+          value={boardgame.id}
+          onChange={chooseBoardgame}
+          auto-cols-max
+          className='w-full rounded-lg border-none'
+        >
           {boardGames.map(boardgame => (
             <option value={boardgame.id} key={'boardgame' + boardgame.name + boardgame.id}>
               {boardgame.name}
@@ -160,26 +173,27 @@ const GameForm = ({ edit, afterSubmit }) => {
           ))}
         </select>
 
-        <div className='w-20 ml-5'>
+        <div className='w-20'>
           <img src={boardgame.imageUrl} alt='' />
         </div>
-      </div>
+      </section>
 
       <DatePicker
         selected={datePlayed}
         onChange={date => setDatePlayed(date)}
         dateFormat='dd-MM-yyyy'
-        className='mb-2'
+        className='mb-2 rounded-lg border-none'
       />
 
-      <div className='flex justify-between items-start'>
+      {/* ------------------user list + player list SECTION ---------------------------- */}
+      <section className='flex justify-between items-start w-full gap-x-2'>
         {/* ------------------USER LIST---------------------------- */}
-        <div className='w-2/5'>
-          <ul className='w-full inline-block p-3 h-52 overflow-auto'>
+        <div className='w-2/5 h-52 '>
+          <ul className='w-full max-h-min inline-block sm:p-3 overflow-x-hidden overflow-y-auto h-52'>
             {sortedUsers.map(user => (
               <li
                 onClick={() => chooseUser(user)}
-                className='flex justify-evenly items-center  mb-1 rounded-full cursor-pointer'
+                className='flex flex-wrap justify-start items-center gap-x-1 sm:gap-x-4 mb-2 rounded-full cursor-pointer'
                 key={user.nickname}
               >
                 <img
@@ -187,7 +201,7 @@ const GameForm = ({ edit, afterSubmit }) => {
                   alt=''
                   className='w-8 h-8 rounded-full'
                 />
-                <p className='text-center w-3/4 pl-2'>{user.nickname}</p>
+                <p className='text-center'>{user.nickname}</p>
               </li>
             ))}
           </ul>
@@ -196,52 +210,56 @@ const GameForm = ({ edit, afterSubmit }) => {
         {/* ------------------PLAYERS LIST---------------------------- */}
         <div className='w-3/5'>
           {players.length > 0 && (
-            <ul className='p-3 flex flex-col'>
+            <ul className='flex flex-col h-52  overflow-x-hidden overflow-y-auto'>
               {players.map(player => (
                 <li
-                  className='flex justify-between items-center w-full mb-1 cursor-pointer'
+                  className='flex gap-2 flex-wrap justify-between items-center w-full pb-2 mb-2 border-b-2 cursor-pointer pr-2'
                   key={player.nickname}
                 >
-                  {/* ------------------player-avatar---------------------------- */}
-                  <img
-                    src={player.avatarUrl || generateAvatar(player.nickname)}
-                    alt=''
-                    className='w-10 h-10 rounded-full'
-                  />
-
-                  {/* ------------------player-nickname---------------------------- */}
-                  <p className='text-center'>{player.nickname}</p>
-
-                  {/* ------------------player-winner---------------------------- */}
-                  <input
-                    type='checkbox'
-                    checked={player.winner}
-                    onChange={() => winnerToggle(player.id)}
-                  />
-
-                  {/* ------------------player-points---------------------------- */}
-                  {boardgame.has_points ? (
-                    <input
-                      type='text'
-                      value={player.points}
-                      className='w-20 h-5 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500  p-2.5'
-                      onChange={e => changePoints(player.id, e.target.value)}
-                      placeholder='0'
+                  <div className='flex gap-x-4 items-center'>
+                    {/* ------------------player-avatar---------------------------- */}
+                    <img
+                      src={player.avatarUrl || generateAvatar(player.nickname)}
+                      alt=''
+                      className='w-8 h-8 rounded-full'
                     />
-                  ) : (
-                    ''
-                  )}
 
-                  {/* ------------------player-remove---------------------------- */}
-                  <span onClick={() => unChoosePlayer(player)} className='text-red-500'>
-                    X
-                  </span>
+                    {/* ------------------player-nickname---------------------------- */}
+                    <p className='text-center'>{player.nickname}</p>
+                  </div>
+
+                  <div className='flex gap-x-4 items-center'>
+                    {/* ------------------player-winner---------------------------- */}
+                    <input
+                      type='checkbox'
+                      checked={player.winner}
+                      onChange={() => winnerToggle(player.id)}
+                    />
+
+                    {/* ------------------player-points---------------------------- */}
+                    {boardgame.has_points ? (
+                      <input
+                        type='text'
+                        value={player.points}
+                        className='w-20 h-5 bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500  p-2.5'
+                        onChange={e => changePoints(player.id, e.target.value)}
+                        placeholder='0'
+                      />
+                    ) : (
+                      ''
+                    )}
+
+                    {/* ------------------player-remove---------------------------- */}
+                    <span onClick={() => unChoosePlayer(player)} className='text-red-500'>
+                      X
+                    </span>
+                  </div>
                 </li>
               ))}
             </ul>
           )}
         </div>
-      </div>
+      </section>
 
       {/* ------------------IMAGE---------------------------- */}
       <div className='mt-2'>
@@ -261,13 +279,17 @@ const GameForm = ({ edit, afterSubmit }) => {
       </div>
 
       <BlueButton
-        disabled={boardgame.id === 0 || players.length === 0 || !players.find(p => p.winner) || clubId === ''}
+        disabled={
+          boardgame.id === 0 ||
+          players.length === 0 ||
+          !players.find(p => p.winner) ||
+          clubId === ''
+        }
       >
         Отправить
       </BlueButton>
-      {errors.length > 0 && (
-        errors.map((error) => <p className='text-red-500 text-center mt-2'>{error[0]}</p>)
-      )}
+      {errors.length > 0 &&
+        errors.map(error => <p className='text-red-500 text-center mt-2'>{error[0]}</p>)}
     </form>
     // </section>
   );
