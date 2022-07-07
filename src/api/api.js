@@ -21,10 +21,10 @@ api.interceptors.request.use(request => {
 api.interceptors.response.use(
   response => { return response; },
   error => {
-    if(store.getState().auth.authToken.token) {
-      store.dispatch(logout());
-      window.location.href = '/';
-    }
+    // if(store.getState().auth.authToken.token) {
+    //   store.dispatch(logout());
+    //   window.location.href = '/';
+    // }
     return Promise.reject(error)
   }
 )

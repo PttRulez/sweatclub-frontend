@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import api from '../api/api';
 import UsersStatsTable from '../components/stats/UsersStatsTable';
 import { useSelector } from 'react-redux';
-import Loader from '../components/UI/Loader';
+import SkeletonLoader from '../components/UI/SkeletonLoader';
 
 const RatingsTable = () => {
   const [usersStats, setUsersStats] = useState([]);
@@ -11,7 +11,6 @@ const RatingsTable = () => {
 
   useEffect(() => {
     document.title = 'Таблица чемпионов';
-
     const params = club !== null ? { club_id: club.id } : {};
     setLoading(true);
     api.get('users-stats', { params }).then(res => {
@@ -23,7 +22,7 @@ const RatingsTable = () => {
   return (
     <>
       {loading ? (
-        <Loader addClasses={'w-52 h-52'} />
+        <SkeletonLoader />
       ) : (
         <section className='pt-10 pb-1'>
           <UsersStatsTable usersStats={usersStats} className='w-full' />

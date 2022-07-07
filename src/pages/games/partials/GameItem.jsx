@@ -2,8 +2,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCrown, faCalendarDays, faPencil } from '@fortawesome/free-solid-svg-icons';
 import { generateAvatar } from '../../../app/helpers';
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 const GameItem = ({ game, showGamePhoto, pencilClick, ...props }) => {
+  const user = useSelector(state => state.auth.user)
   return (
     <div className='w-full md:w-fit h-1/3 flex items-center justify-evenly md:justify-center border-2 mb-2 p-3 border-gray-400 mr-2'>
       {/* ----------------------------------------------- INFO ------------------------------------------------------------- */}
@@ -13,16 +15,17 @@ const GameItem = ({ game, showGamePhoto, pencilClick, ...props }) => {
             <FontAwesomeIcon icon={faCalendarDays} className='mr-2' />
             {game.date_played}
             {/* <Link to={`/games/${game.id}/edit`}> */}
+            {user?.isAdmin &&
             <FontAwesomeIcon
               icon={faPencil}
               className='ml-2 cursor-pointer'
               onClick={() => pencilClick(game.id)}
-            />
+            />}
             {/* </Link> */}
           </p>
           <p className='text-moyTsvet font-bold text-xl mb-2'>{game.boardgame.name}</p>
           <Link to={`/boardgames/${game.boardgame.id}`}>
-            <img src={game.boardgame.imageUrl} alt='' className='h-32 w-32 object-contain' />
+            <img src={game.boardgame.thumbnailUrl} alt='' className='h-32 w-32 object-contain' />
           </Link>
         </div>
       </div>
@@ -38,7 +41,7 @@ const GameItem = ({ game, showGamePhoto, pencilClick, ...props }) => {
               key={player.nickname}
             >
               <img
-                className='w-10 h-10 rounded-full mr-4'
+                className='w-10 h-10 mr-4 rounded-full'
                 src={player.avatarUrl || generateAvatar(player.nickname)}
                 alt='Avatar of Writer'
               />
@@ -60,7 +63,7 @@ const GameItem = ({ game, showGamePhoto, pencilClick, ...props }) => {
           <div>
             <div className='flex justify-center'>
               <img
-                src={game.photoUrl ?? ''}
+                src={game.thumbnail ?? ''}
                 alt=''
                 className='max-h-32 cursor-pointer'
                 onClick={() => showGamePhoto(game.photoUrl)}

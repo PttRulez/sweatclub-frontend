@@ -22,7 +22,7 @@ const Profile = () => {
   return (
     <>
       <section className='pt-10 pb-1 flex flex-col items-center'>
-        <img src={data.user.avatarUrl} alt='' className='w-56' />
+        <img src={data.user.avatarPicture} alt='' className='w-56' />
         <div className='flex items-center justify-center'>
           <h1>{data.user.nickname}</h1>
           {Number(userId) === myUserId && <Link to={`/profile/edit`} className='text-xs ml-5'>

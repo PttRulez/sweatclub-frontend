@@ -3,3 +3,9 @@
 @tailwind utilities;
 
 @import 'react-datepicker/dist/react-datepicker';
+
+@layer utilities {
+  .clip-circle {
+    clip-path: circle();
+  }
+}

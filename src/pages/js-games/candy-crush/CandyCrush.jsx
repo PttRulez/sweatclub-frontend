@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useState } from 'react';
-import blueCandy from './images/blue-candy.png';
-import greenCandy from './images/green-candy.png';
-import orangeCandy from './images/orange-candy.png';
-import purpleCandy from './images/purple-candy.png';
-import redCandy from './images/red-candy.png';
-import yellowCandy from './images/yellow-candy.png';
-import blank from './images/blank.png';
+import blueCandy from './images/100x100/blue-candy.png';
+import greenCandy from './images/100x100/green-candy.png';
+import orangeCandy from './images/100x100/orange-candy.png';
+import purpleCandy from './images/100x100/purple-candy.png';
+import redCandy from './images/100x100/red-candy.png';
+import yellowCandy from './images/100x100/yellow-candy.png';
+import blank from './images/100x100/blank.png';
 import cssClasses from './css/candy.module.css';
 import BlueButton from '../../../components/UI/BlueButton';
 import { Link } from 'react-router-dom';
@@ -25,6 +25,7 @@ const CandyCrush = () => {
   const [level, setLevel] = useState(10);
   const [timeToGo, setTimeToGo] = useState(10);
   const [gameFinished, setGameFinished] = useState(false);
+  const [gameStarted, setGameStarted] = useState(false);
 
   const createBoard = () => {
     const randomCandies = [];
@@ -136,14 +137,16 @@ const CandyCrush = () => {
   }, [checkRows, checkCols]);
 
   const dragStart = async e => {
-    await setCandyDragged(e.target);
+    setCandyDragged(e.target);
   };
 
   const dragDrop = async e => {
     if (e.preventDefault) {
       e.preventDefault();
     }
-    if (candyReplaced === null) {
+    // Стартует отсчет времени, если это первое движение
+    if (!gameStarted) {
+      setGameStarted(true);
       levelIntervalId = setInterval(() => {
         if (level > 1) {
           setLevel(secondsForMove => secondsForMove - 1);
@@ -153,10 +156,22 @@ const CandyCrush = () => {
       }, 30000);
     }
 
-    await setCandyReplaced(e.target);
+    setCandyReplaced(e.target);
+    console.log('dragDrop', candyDragged);
+    console.log('dragDrop', candyReplaced);
   };
 
-  const dragEnd = e => {
+  const handleClick = async (e) => {
+    if(candyDragged === null) {
+      await dragStart(e);
+    } else {
+      await dragDrop(e);
+      await dragEnd(e);
+    }
+  }
+
+  const dragEnd = async (e) => {
+    console.log('dragEnd', candyDragged, candyReplaced);
     const candyDraggedId = Number(candyDragged.dataset.id);
     const candyReplacedId = Number(candyReplaced.dataset.id);
 
@@ -173,7 +188,6 @@ const CandyCrush = () => {
     const { toDestroy, _ } = checkAll();
 
     if (candyReplacedId && validMove && toDestroy.length > 0) {
-      console.log('VALID EVERYTHING');
       candies[candyReplacedId] = candyDragged.getAttribute('src');
       candies[candyDraggedId] = candyReplaced.getAttribute('src');
       setCandies([...candies]);
@@ -181,13 +195,15 @@ const CandyCrush = () => {
       setTimeToGo(level);
       clearInterval(timerIntervalId);
       timerIntervalId = setInterval(function () {
-        console.log('itervalId', timerIntervalId);
         setTimeToGo(time => (time - 0.2).toFixed(1));
       }, 200);
     } else {
       candies[candyDraggedId] = candyDragged.getAttribute('src');
       candies[candyReplacedId] = candyReplaced.getAttribute('src');
     }
+
+    await setCandyDragged(null);
+    console.log('dragEndEnd');
   };
 
   const resetGame = () => {
@@ -197,6 +213,7 @@ const CandyCrush = () => {
     setCandyReplaced(null);
     setLevel(10);
     setTimeToGo(10);
+    setGameStarted(false);
     setGameFinished(false);
     createBoard();
   };
@@ -278,6 +295,7 @@ const CandyCrush = () => {
               onDragLeave={e => e.preventDefault()}
               onDrop={dragDrop}
               onDragEnd={dragEnd}
+              onClick={handleClick}
             />
           ))}
         </div>

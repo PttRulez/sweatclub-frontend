@@ -6,18 +6,19 @@ import { useSelector } from 'react-redux';
 import MyModal from '../../components/UI/Modal/MyModal';
 import GameForm from './GameForm';
 import cl from './css/games.module.css';
-import Loader from '../../components/UI/Loader';
+import SkeletonLoader from '../../components/UI/SkeletonLoader';
 
 const GamesList = () => {
   const user = useSelector(state => state.auth.user);
+  const club = useSelector(state => state.general.club);
+  const [loading, setLoading] = useState(false);
+
   const [games, setGames] = useState([]);
   const [gameFormVisible, setGameFormVisible] = useState(false);
   const [img, setImg] = useState(false);
   const [edit, setEdit] = useState(false);
   const [gameIdToEdit, setGameIdToEdit] = useState(null);
-  const [loading, setLoading] = useState(false);
   const [gameFormKey, setGameFormKey] = useState(1);
-  const club = useSelector(state => state.general.club);
 
   function fetchGames() {
     setLoading(true);
@@ -61,9 +62,25 @@ const GamesList = () => {
   return (
     <>
       {loading ? (
-        <Loader addClasses={'w-52 h-52'}/>
+        <SkeletonLoader />
       ) : (
         <>
+          <div className='flex flex-col items-end md:flex-row md:justify-center md:flex-wrap mt-10'>
+            {games.map(game => (
+              <GameItem
+                game={game}
+                key={game.id}
+                showGamePhoto={setImg}
+                pencilClick={openGameModal}
+              />
+            ))}
+          </div>
+
+          <MyModal visible={img} setVisible={setImg}>
+            <img src={String(img)} alt='' className={cl.photo} />
+          </MyModal>
+
+          {/* ---------------------- Кнопка создания игры --------------------------- */}
           {user?.isAdmin && (
             <>
               <AddButton onClick={() => openGameModal(null)}>+</AddButton>
@@ -79,22 +96,6 @@ const GamesList = () => {
               )}
             </>
           )}
-
-          <br />
-          <div className='flex flex-col items-end md:flex-row md:justify-center md:flex-wrap'>
-            {games.map(game => (
-              <GameItem
-                game={game}
-                key={game.id}
-                showGamePhoto={setImg}
-                pencilClick={openGameModal}
-              />
-            ))}
-          </div>
-
-          <MyModal visible={img} setVisible={setImg}>
-            <img src={String(img)} alt='' className={cl.photo} />
-          </MyModal>
         </>
       )}
     </>

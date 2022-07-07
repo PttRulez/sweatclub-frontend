@@ -25,7 +25,7 @@ const Boardgame = () => {
     <>
       <div className='mt-10'>
         <div className='text-center block md:inline-block md:float-left'>
-          <img src={boardgame.imageUrl} alt={`${boardgame.name} avatar`} />
+          <img src={boardgame.imageUrl} alt={`${boardgame.name} avatar`} className='w-52'/>
           <div className='flex items-center justify-center gap-x-2'>
             <h1>{boardgame.name}</h1>
             {user.isAdmin && (
