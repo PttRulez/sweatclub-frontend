@@ -19,7 +19,7 @@ const CandyCrush = () => {
   const user = useSelector(state => state.auth.user);
   const [width, setWidth] = useState(8);
   const [candyDragged, setCandyDragged] = useState(null);
-  const [candyReplaced, setCandyReplaced] = useState(null);
+  // const [candyReplaced, setCandyReplaced] = useState(null);
   const [candies, setCandies] = useState([]);
   const [score, setScore] = useState(0);
   const [level, setLevel] = useState(10);
@@ -156,22 +156,18 @@ const CandyCrush = () => {
       }, 30000);
     }
 
-    setCandyReplaced(e.target);
-    console.log('dragDrop', candyDragged);
-    console.log('dragDrop', candyReplaced);
+    dragEnd(e.target);
   };
 
-  const handleClick = async (e) => {
-    if(candyDragged === null) {
-      await dragStart(e);
+  const handleClick = async e => {
+    if (candyDragged === null) {
+      setCandyDragged(e.target);
     } else {
-      await dragDrop(e);
-      await dragEnd(e);
+      dragDrop(e);
     }
-  }
+  };
 
-  const dragEnd = async (e) => {
-    console.log('dragEnd', candyDragged, candyReplaced);
+  const dragEnd = async candyReplaced => {
     const candyDraggedId = Number(candyDragged.dataset.id);
     const candyReplacedId = Number(candyReplaced.dataset.id);
 
@@ -202,15 +198,13 @@ const CandyCrush = () => {
       candies[candyReplacedId] = candyReplaced.getAttribute('src');
     }
 
-    await setCandyDragged(null);
-    console.log('dragEndEnd');
+    setCandyDragged(null);
   };
 
   const resetGame = () => {
     clearInterval(timerIntervalId);
     clearInterval(levelIntervalId);
     setCandyDragged(null);
-    setCandyReplaced(null);
     setLevel(10);
     setTimeToGo(10);
     setGameStarted(false);
@@ -244,13 +238,11 @@ const CandyCrush = () => {
   useEffect(() => {
     if (candies.length > 0) {
       const { toDestroy, points } = checkAll();
-      if (candyReplaced !== null && toDestroy.length === 0) {
-      }
 
       if (toDestroy.length > 0) {
         toDestroy.forEach(i => (candies[i] = blank));
         setCandies([...candies]);
-        if (candyReplaced !== null) {
+        if (gameStarted) {
           setScore(prev => prev + points);
         }
         fillBlanks();
@@ -261,7 +253,6 @@ const CandyCrush = () => {
   return (
     <div className={cssClasses.wrapper}>
       <div className={cssClasses['main-grid']}>
-
         {/* --------------------RATINGS LINK ----------------------- */}
         <div className={cssClasses['ratings']}>
           <Link
@@ -294,7 +285,6 @@ const CandyCrush = () => {
               onDragEnter={e => e.preventDefault()}
               onDragLeave={e => e.preventDefault()}
               onDrop={dragDrop}
-              onDragEnd={dragEnd}
               onClick={handleClick}
             />
           ))}
@@ -304,7 +294,6 @@ const CandyCrush = () => {
         <div className={cssClasses.score}>
           <p className='text-purple-800 font-bold text-8xl lg:text-9xl'>{score}</p>
         </div>
-        
 
         {/* -----------------RESTART BUTTON ------------------------ */}
         <div className={cssClasses.restart}>

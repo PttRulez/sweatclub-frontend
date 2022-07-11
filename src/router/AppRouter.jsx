@@ -15,6 +15,7 @@ import { ABILITIES } from '../utils/constants';
 import BoardGameForm from '../pages/boardgames/BoardgameForm';
 import CandyCrush from '../pages/js-games/candy-crush/CandyCrush';
 import CandyCrushRatings from '../pages/js-games/candy-crush/CandyCrushRatings';
+import EditAnotherUser from '../pages/user/EditAnotherUser';
 
 const AppRouter = () => {
   return (
@@ -41,6 +42,7 @@ const AppRouter = () => {
 
       <Route element={<Auth allowedAbilities={[ABILITIES.Admin]} />}>
         <Route path='/games/:id/edit' element={<EditGame />} />
+        <Route path='/profile/:id/edit' element={<EditAnotherUser />} />
 
         <Route path='/boardgames/:id/edit' element={<BoardGameForm edit={true} />} />
       </Route>

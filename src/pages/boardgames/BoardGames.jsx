@@ -5,7 +5,6 @@ import AddButton from '../../components/UI/AddButton';
 import { useSelector } from 'react-redux';
 import MyModal from '../../components/UI/Modal/MyModal';
 import BoardGameForm from './BoardgameForm';
-import Loader from '../../components/UI/Loader';
 import SkeletonLoader from '../../components/UI/SkeletonLoader';
 
 const BoardGames = () => {

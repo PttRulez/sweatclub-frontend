@@ -174,7 +174,7 @@ const GameForm = ({ edit, afterSubmit, gameId }) => {
         </select>
 
         <div className='w-20'>
-          <img src={boardgame.imageUrl} alt='' />
+          <img src={boardgame.thumbnail} alt='' />
         </div>
       </section>
 

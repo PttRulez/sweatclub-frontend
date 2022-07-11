@@ -1,40 +1,43 @@
 import { useState, useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import api from '../../api/api';
 
-const EditUser = ({ notYou }) => {
-  const user = useSelector(state => state.auth.user);
-  const authToken = useSelector(state => state.auth.authToken);
+const EditAnotherUser = ({ notYou }) => {
+  const [user, setUser] = useState({
+    id: '',
+    nickname: '',
+    avatarPicture: '',
+    avatarUrl: '',
+  });
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const { id: userId } = useParams();
 
-  const [nickname, setNickname] = useState('');
-  const [avatar, setAvatar] = useState('');
   const [errorList, setErrorList] = useState({});
+  const [avatar, setAvatar] = useState('');
+  const [nickname, setNickname] = useState('');
 
   useEffect(() => {
-    setNickname(user.nickname);
+    api.get(`/users/${userId}`).then(res =>
+      setUser(res.data.user)      
+    );
   }, []);
+    
+  useEffect(() => {
+      setNickname(user.nickname)
+  }, [user.nickname]);
+
+  
 
   const editProfile = e => {
     e.preventDefault();
 
     const formData = new FormData();
-    formData.append('nickname', nickname);
+    formData.append('nickname', user.nickname);
     formData.append('avatar', avatar);
 
     api.post(`/users/${user.id}?_method=PUT`, formData).then(res => {
       console.log(res);
       if (res.status === 200) {
-        const authObj = {
-          authToken,
-          isAuth: true,
-          user: res.data.data,
-        };
-        dispatch({ type: 'SET_AUTH', payload: authObj });
-        localStorage.setItem('auth', JSON.stringify(authObj));
-
         navigate(`/profile/${user.id}`);
       } else if (res.data.status === 422) {
         setErrorList(res.data.errors);
@@ -64,8 +67,8 @@ const EditUser = ({ notYou }) => {
             id='nickname'
             autoComplete='off'
             className='bg-gray-50 border w-full border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500  p-2.5 '
-            value={nickname}
-            onChange={e => setNickname(e.target.value)}
+            value={user.nickname}
+            onChange={e => setUser({...user, nickname: e.target.value})}
             required
           />
           <p className='text-red-600'>{errorList.nickname}</p>
@@ -91,7 +94,7 @@ const EditUser = ({ notYou }) => {
           <button
             type='submit'
             className='disabled:opacity-50 disabled:cursor-not-allowed mt-2 text-white bg-blue-700 hover:bg-blue-800 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5'
-            disabled={!nickname}
+            disabled={!user.nickname}
           >
             Правка
           </button>
@@ -101,4 +104,4 @@ const EditUser = ({ notYou }) => {
   );
 };
 
-export default EditUser;
+export default EditAnotherUser;
