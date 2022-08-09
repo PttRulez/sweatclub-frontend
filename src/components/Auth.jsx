@@ -5,11 +5,14 @@ import MainLayout from '../layouts/MainLayout';
 import { ABILITIES } from '../utils/constants';
 import api from '../api/api';
 import { logout } from '../store/auth/actions';
+import GamesList from '../pages/games/GamesList';
 
 const Auth = ({ allowedAbilities }) => {
   const auth = useSelector(state => state.auth);
   const dispatch = useDispatch();
   const location = useLocation();
+
+  console.log('GameForm', GamesList());
 
   useEffect(() => {
     api.get('check-auth').then(res => {

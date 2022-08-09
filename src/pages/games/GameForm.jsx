@@ -34,7 +34,7 @@ const GameForm = ({ edit, afterSubmit, gameId }) => {
         setUsers(
           res.data.users.map(u => {
             u.winner = false;
-            u.points = '';
+            u.points = null;
             return u;
           })
         );
@@ -45,7 +45,7 @@ const GameForm = ({ edit, afterSubmit, gameId }) => {
         setUsers(
           res.data.data.map(u => {
             u.winner = false;
-            u.points = '';
+            u.points = null;
             return u;
           })
         );

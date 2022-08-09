@@ -149,7 +149,7 @@ const CandyCrush = () => {
       setGameStarted(true);
       levelIntervalId = setInterval(() => {
         if (level > 1) {
-          setLevel(secondsForMove => secondsForMove - 1);
+          setLevel(level => level - 1);
         } else {
           clearInterval(levelIntervalId);
         }
@@ -190,9 +190,21 @@ const CandyCrush = () => {
 
       setTimeToGo(level);
       clearInterval(timerIntervalId);
-      timerIntervalId = setInterval(function () {
-        setTimeToGo(time => (time - 0.2).toFixed(1));
-      }, 200);
+
+      timerIntervalId = (function(closuredTimeToGo) {
+
+        return setInterval(function() {
+          closuredTimeToGo -=0.2;
+          console.log('closuredTimeToGo', closuredTimeToGo);
+          setTimeToGo(time => Number((time - 0.2)).toFixed(1));
+          if(closuredTimeToGo <= 0) {
+            console.log('called stopGame from Interval')
+            stopGame();
+          }
+        }, 200);
+      
+      })(Number(timeToGo).toFixed(1));
+
     } else {
       candies[candyDraggedId] = candyDragged.getAttribute('src');
       candies[candyReplacedId] = candyReplaced.getAttribute('src');
@@ -209,6 +221,7 @@ const CandyCrush = () => {
     setTimeToGo(10);
     setGameStarted(false);
     setGameFinished(false);
+    setScore(0);
     createBoard();
   };
 
@@ -222,14 +235,24 @@ const CandyCrush = () => {
       .catch(err => alert(err));
   };
 
-  useEffect(() => {
-    if (timeToGo <= 0.00001) {
+  const stopGame = () => {
       clearInterval(timerIntervalId);
       clearInterval(levelIntervalId);
+      setTimeToGo(0);
       setGameFinished(true);
       sendPointsToServer();
-    }
-  }, [timeToGo]);
+  }
+
+  // useEffect(() => {
+  //   if (timeToGo <= 0.00001) {
+  //     console.log('timeToGo')
+  //     clearInterval(timerIntervalId);
+  //     clearInterval(levelIntervalId);
+  //     setGameFinished(true);
+  //     sendPointsToServer();
+  //   }
+  // }, [timeToGo]);
+
 
   useEffect(() => {
     createBoard();
